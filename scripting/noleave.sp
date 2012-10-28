@@ -1,28 +1,32 @@
-#pragma semicolon 1 // We like semicolons.
+/**
+* No Leave by Root
+*
+* Description:
+*   Simply prevent player's leaving to spectator at round end.
+*
+* Version 1.0
+* Changelog & more info at http://goo.gl/4nKhJ
+*/
 
 // ====[ INCLUDES ]====================================================
 #include <sourcemod>
 
 // ====[ CONSTANTS ]===================================================
 #define PLUGIN_NAME			"Prevent leaving at round end"
-#define PLUGIN_AUTHOR		"Root"
-#define PLUGIN_DESCRIPTION	"Simply prevent player's leaving to spectator at round end"
 #define PLUGIN_VERSION		"1.0"
-#define PLUGIN_CONTACT		"http://www.dodsplugins.com/"
 
 // ====[ VARIABLES ]===================================================
-new Handle:g_ConVar_Version,
-	Handle:g_AllowSpectators = INVALID_HANDLE;
+new Handle:AllowSpectators = INVALID_HANDLE
 
 // ====[ PLUGIN ]======================================================
 public Plugin:myinfo =
 {
 	name			= PLUGIN_NAME,
-	author			= PLUGIN_AUTHOR,
-	description		= PLUGIN_DESCRIPTION,
+	author			= "Root",
+	description		= "Simply prevent player's leaving to spectator at round end",
 	version			= PLUGIN_VERSION,
-	url				= PLUGIN_CONTACT
-};
+	url				= "http://dodsplugins.com/"
+}
 
 /* OnPluginStart()
  *
@@ -31,13 +35,13 @@ public Plugin:myinfo =
 public OnPluginStart()
 {
 	// Create convars
-	g_ConVar_Version = CreateConVar("blockspec_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_REPLICATED);
+	CreateConVar("blockspec_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_REPLICATED)
 
-	g_AllowSpectators = FindConVar("mp_allowspectators");
+	AllowSpectators = FindConVar("mp_allowspectators")
 
 	// Hook events
-	HookEvent("dod_round_win", Event_round_end);
-	HookEvent("dod_round_start", Event_round_start);
+	HookEvent("dod_round_win", Event_round_end)
+	HookEvent("dod_round_start", Event_round_start)
 }
 
 /* OnMapStart()
@@ -47,10 +51,7 @@ public OnPluginStart()
 public OnMapStart()
 {
 	// If round was latest and new round wasn't started, force mp_allowspectators to 1
-	SetConVarInt(g_AllowSpectators, true);
-
-	// Work around A2S_RULES bug in linux orangebox
-	SetConVarString(g_ConVar_Version, PLUGIN_VERSION);
+	SetConVarInt(AllowSpectators, true)
 }
 
 /* Event_round_end()
@@ -59,7 +60,7 @@ public OnMapStart()
  * --------------------------------------------------------------------- */
 public Event_round_end(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	SetConVarInt(g_AllowSpectators, false);
+	SetConVarInt(AllowSpectators, false)
 }
 
 /* Event_round_start()
@@ -68,5 +69,5 @@ public Event_round_end(Handle:event, const String:name[], bool:dontBroadcast)
  * --------------------------------------------------------------------- */
 public Event_round_start(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	SetConVarInt(g_AllowSpectators, true);
+	SetConVarInt(AllowSpectators, true)
 }
