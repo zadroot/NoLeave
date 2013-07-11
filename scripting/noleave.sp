@@ -1,14 +1,21 @@
-// ====[ INCLUDES ]====================================================
-#include <sourcemod>
+/**
+* No Leave by Root
+*
+* Description:
+*   Simply prevent player's leaving to spectators at a round end.
+*
+* Version 1.0
+* Changelog & more info at http://goo.gl/4nKhJ
+*/
 
-// ====[ CONSTANTS ]===================================================
+// ====[ CONSTANTS ]==============================================================
 #define PLUGIN_NAME    "No Leave"
 #define PLUGIN_VERSION "1.0"
 
-// ====[ VARIABLES ]===================================================
+// ====[ VARIABLES ]==============================================================
 new Handle:mp_allowspectators = INVALID_HANDLE
 
-// ====[ PLUGIN ]======================================================
+// ====[ PLUGIN ]=================================================================
 public Plugin:myinfo =
 {
 	name        = PLUGIN_NAME,
@@ -22,43 +29,42 @@ public Plugin:myinfo =
 /* OnPluginStart()
  *
  * When the plugin starts up.
- * --------------------------------------------------------------------- */
+ * ------------------------------------------------------------------------------- */
 public OnPluginStart()
 {
-	// Create convars
-	CreateConVar("blockspec_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_SPONLY)
-
+	// Create ConVars
+	CreateConVar("blockspec_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_NOTIFY|FCVAR_DONTRECORD)
 	mp_allowspectators = FindConVar("mp_allowspectators")
 
-	// Hook events
-	HookEvent("dod_round_win", Event_round_end)
-	HookEvent("dod_round_start", Event_round_start)
+	// Hook needed events that plugin using
+	HookEvent("dod_round_win",   OnRoundEnd,   EventHookMode_PostNoCopy)
+	HookEvent("dod_round_start", OnRoundStart, EventHookMode_PostNoCopy)
 }
 
 /* OnConfigsExecuted()
  *
  * When game configurations (e.g. map-specific configs) are executed.
- * --------------------------------------------------------------------- */
+ * ------------------------------------------------------------------------------- */
 public OnConfigsExecuted()
 {
-	// If round was latest and new round wasn't started, force mp_allowspectators to 1
+	// If round was last (i.e. new round was not started), force mp_allowspectators to 1
 	SetConVarBool(mp_allowspectators, true)
 }
 
-/* Event_round_end()
+/* OnRoundEnd()
  *
  * When a round ends.
- * --------------------------------------------------------------------- */
-public Event_round_end(Handle:event, const String:name[], bool:dontBroadcast)
+ * ------------------------------------------------------------------------------- */
+public OnRoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	SetConVarBool(mp_allowspectators, false)
 }
 
-/* Event_round_start()
+/* OnRoundStart()
  *
  * Called when a round starts.
- * --------------------------------------------------------------------- */
-public Event_round_start(Handle:event, const String:name[], bool:dontBroadcast)
+ * ------------------------------------------------------------------------------- */
+public OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	SetConVarBool(mp_allowspectators, true)
 }
