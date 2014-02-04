@@ -23,7 +23,7 @@ public Plugin:myinfo =
 	description = "Simply prevent player's leaving to spectators at a round end",
 	version     = PLUGIN_VERSION,
 	url         = "http://www.dodsplugins.com/"
-};
+}
 
 
 /* OnPluginStart()
@@ -46,7 +46,7 @@ public OnPluginStart()
  * ------------------------------------------------------------------ */
 public OnConfigsExecuted()
 {
-	// If round was last (i.e. new round has not started after winning) force mp_allowspectators to 1
+	// If round was latest (i.e. new round has not started after winning) force mp_allowspectators to 1
 	SetConVarBool(mp_allowspectators, true);
 }
 
@@ -56,5 +56,5 @@ public OnConfigsExecuted()
  * ------------------------------------------------------------------ */
 public OnRoundEvents(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	SetConVarBool(mp_allowspectators, (name[10] == 's') ? true : false); // Hacks
+	SetConVarBool(mp_allowspectators, (name[10] == 's') ? true : false); // Hack
 }
